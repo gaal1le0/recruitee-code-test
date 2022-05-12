@@ -20,7 +20,7 @@ class DetailViewController: UIViewController {
     private var router = DetailRouter()
     private var viewModel = DetailViewModel()
     private var disposeBag = DisposeBag()
-    var movieID: String?
+    var fullExchangeName: String?
     
     
     override func viewDidLoad() {
