@@ -11,9 +11,6 @@ import RxCocoa
 
 class HomeView: UIViewController {
     
-    @IBOutlet weak var myTableView: UITableView!
-    @IBOutlet weak var myActivity: UIActivityIndicatorView!
-    
     private var router = HomeRouter()
     private var viewModel = HomeViewModel()
     private var disposeBag = DisposeBag()
@@ -39,30 +36,15 @@ class HomeView: UIViewController {
     }
     
     private func configureTableView() {
-        myTableView.rowHeight = UITableView.automaticDimension
-        myTableView.register(UINib(nibName: "HomeTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "HomeTableViewCell")
+       
     }
     
     private func getData() {
-        viewModel.getListPopularMoviesData()
-            .subscribe(on: MainScheduler.instance)
-            .observe(on: MainScheduler.instance)
-            .subscribe (
-                onNext: { movies in
-                    self.movies = movies
-                    self.reloadTableView()
-                }, onError: { error in
-                    print("Hay un error \(error.localizedDescription)")
-                }, onCompleted: {
-                }).disposed(by: disposeBag)
+        ManagerConnections.getMarketSummary()
     }
     
     private func reloadTableView() {
-        DispatchQueue.main.async {
-            self.myActivity.stopAnimating()
-            self.myActivity.isHidden = true
-            self.myTableView.reloadData()
-        }
+        
     }
     
 }

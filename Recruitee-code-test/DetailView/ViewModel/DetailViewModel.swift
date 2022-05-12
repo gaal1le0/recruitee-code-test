@@ -1,5 +1,5 @@
 //
-//  HomeViewModel.swift
+//  DetailViewModel.swift
 //  TMDBApp22
 //
 //  Created by Emanuel Martínez on 12/5/22.
@@ -8,16 +8,15 @@
 import Foundation
 import RxSwift
 
-class HomeViewModel {
-    
-    private weak var view: HomeView?
-    private var router: HomeRouter?
+class DetailViewModel {
+    private weak var view: DetailViewController?
+    private var router: DetailRouter?
     private var managerConnections = ManagerConnections()
     
-    func bind(view: HomeView, router: HomeRouter) {
+    func bind(view: DetailViewController, router: DetailRouter) {
         self.view = view
         self.router = router
         self.router?.setSourceView(view)
     }
-    
+
 }

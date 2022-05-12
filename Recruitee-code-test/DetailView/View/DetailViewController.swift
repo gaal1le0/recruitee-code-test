@@ -25,32 +25,8 @@ class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        getDataAndShowDetailMovie()
         viewModel.bind(view: self, router: router)
     }
     
-    private func getDataAndShowDetailMovie() {
-        guard let idMovie = movieID else { return }
-        
-        viewModel.getMovieData(movieID: idMovie)
-            .subscribe (onNext: { movie in
-                self.showMovieData(movie: movie)
-            },
-                        onError: { error in
-                print("Ha ocurrido un error: \(error)")
-            },
-                        onCompleted: {
-            }).disposed(by: disposeBag)
-    }
-    
-    func showMovieData(movie: MovieDetail) {
-        DispatchQueue.main.async {
-            self.titleHeader.text = movie.title
-            self.imageFilm.imageFromServerURL(urlString: Constants.URL.urlImages+movie.posterPath, placeholderImage: UIImage(named: "claqueta")!)
-            self.descriptionMovie.text = movie.overview
-            self.releaseDate.text = movie.releaseDate
-            self.originalTitle.text = movie.originalTitle
-            self.voteAverage.text = String(movie.voteAverage)
-        }
-    }
+
 }
