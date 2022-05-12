@@ -18,5 +18,8 @@ class DetailViewModel {
         self.router = router
         self.router?.setSourceView(view)
     }
-
+    
+    func getStockData(fullExchangeName: String) -> Observable<QuoteType> {
+        return managerConnections.getDetailStock(fullExchangeName: fullExchangeName)
+    }
 }
