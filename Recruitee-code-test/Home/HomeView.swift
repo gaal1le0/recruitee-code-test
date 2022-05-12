@@ -115,9 +115,9 @@ extension HomeView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if searchController.isActive && searchController.searchBar.text != "" {
-            viewModel.makeDetailView(fullExchangeName: String(self.filteredMarket[indexPath.row].fullExchangeName))
+            viewModel.makeDetailView(fullExchangeName: String(self.filteredMarket[indexPath.row].exchange))
         } else {
-            viewModel.makeDetailView(fullExchangeName: String(self.markets[indexPath.row].fullExchangeName))
+            viewModel.makeDetailView(fullExchangeName: String(self.markets[indexPath.row].exchange))
         }
     }
 }

@@ -64,9 +64,13 @@ class ManagerConnections {
                 Constants.Headers.host: Constants.Endpoints.singleEndPoint,
                 Constants.Headers.apyKey: Constants.apiKey
             ]
+            
+            let url = Constants.URL.main + Constants.Endpoints.urlStockGetSummary+Constants.Parameter.symbol+fullExchangeName+Constants.Parameter.region
+            
+            let urlString = url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
 
             
-            let request = NSMutableURLRequest(url: NSURL(string: Constants.URL.main + Constants.Endpoints.urlStockGetSummary+Constants.Parameter.symbol+fullExchangeName+Constants.Parameter.region)! as URL,
+            let request = NSMutableURLRequest(url: NSURL(string: urlString ?? "")! as URL,
                                                     cachePolicy: .useProtocolCachePolicy,
                                                 timeoutInterval: 10.0)
             request.httpMethod = "GET"
