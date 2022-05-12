@@ -88,10 +88,9 @@ class ManagerConnections {
                         let decoder = JSONDecoder()
                         let stock = try decoder.decode(Stock.self, from: data)
                         guard let quoteType = stock.quoteType else { return }
-                        print("Estamos recuperando la stock: \(String(describing: stock.quoteType?.symbol))")
                         observer.onNext(quoteType)
                     } catch let error {
-                        print("Ha ocurrido un error: \(error.localizedDescription)")
+                        print("Error: \(error.localizedDescription)")
                     }
                 }
                 else if response.statusCode == 401 {
