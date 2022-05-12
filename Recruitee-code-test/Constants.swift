@@ -30,4 +30,9 @@ struct Constants {
     struct Method {
         static let get = "GET"
     }
+    
+    struct Parameter {
+        static let symbol = "?symbol="
+        static let region = "&region=U"
+    }
 }
