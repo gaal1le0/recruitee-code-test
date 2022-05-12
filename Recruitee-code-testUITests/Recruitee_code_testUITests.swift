@@ -2,7 +2,7 @@
 //  Recruitee_code_testUITests.swift
 //  Recruitee-code-testUITests
 //
-//  Created by Sergio Becerril on 11/5/22.
+//  Created by Emanuel Martínez on 12/5/22.
 //
 
 import XCTest
