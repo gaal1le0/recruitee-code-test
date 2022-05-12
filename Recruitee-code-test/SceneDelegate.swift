@@ -10,7 +10,8 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
-    
+    var timer = Timer()
+    let homeViewModel = HomeViewModel()
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -18,6 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
+        scheduledTimerWithTimeInterval()
         
         window = UIWindow(frame: UIScreen.main.bounds)
         
@@ -57,6 +59,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
     
+    func scheduledTimerWithTimeInterval(){
+        self.timer = Timer.scheduledTimer(withTimeInterval: 8, repeats: true, block: { _ in
+            self.updateCounting()
+            })
+    }
     
+    func updateCounting(){
+        homeViewModel.getListStockOptions()
+    }
 }
 
