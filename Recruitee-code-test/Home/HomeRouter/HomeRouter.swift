@@ -23,4 +23,9 @@ class HomeRouter {
         let view = HomeView(nibName: "HomeView", bundle: Bundle.main)
         return view
     }
+    
+    func navigateToDetailView(fullExchangeName: String) {
+        let detailView = DetailRouter(fullExchangeName: fullExchangeName).viewController
+        sourceView?.navigationController?.pushViewController(detailView, animated: true)
+    }
 }

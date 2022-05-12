@@ -12,11 +12,11 @@ class DetailRouter {
         return createViewController()
     }
     
-    var movieID: String?
+    var fullExchangeName: String?
     private var sourceView: UIViewController?
     
-    init(movieID: String? = "") {
-        self.movieID = movieID
+    init(fullExchangeName: String? = "") {
+        self.fullExchangeName = fullExchangeName
     }
     
     func setSourceView(_ sourceView: UIViewController?) {
@@ -26,7 +26,7 @@ class DetailRouter {
     
     private func createViewController() -> UIViewController {
         let view = DetailViewController(nibName: "DetailViewController", bundle: Bundle.main)
-        view.movieID = self.movieID
+        view.fullExchangeName = self.fullExchangeName
         return view
     }
 }

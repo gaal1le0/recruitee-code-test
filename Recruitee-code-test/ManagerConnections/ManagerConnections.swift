@@ -12,36 +12,81 @@ import RxSwift
 
 class ManagerConnections {
     
-   static func getMarketSummary() {
-        let headers = [
-            "X-RapidAPI-Host": "yh-finance.p.rapidapi.com",
-            "X-RapidAPI-Key": "a039144774mshca594ff07e2c4c3p1b2b61jsn6b1c931eed8c"
-        ]
-
-        let request = NSMutableURLRequest(url: NSURL(string: Constants.URL.main + Constants.Endpoints.urlMarketGetSummary)! as URL,
-                                                cachePolicy: .useProtocolCachePolicy,
-                                            timeoutInterval: 10.0)
-        request.httpMethod = "GET"
-        request.allHTTPHeaderFields = headers
-
-        let session = URLSession.shared
-        let dataTask = session.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) -> Void in
+    func getSummaryMarket() -> Observable<[Result]> {
+        return Observable.create { observer in
             
-            guard let data = data, error == nil, let response = response as? HTTPURLResponse else { return }
+            let headers = [
+                Constants.Headers.host: Constants.Endpoints.singleEndPoint,
+                Constants.Headers.apyKey: Constants.apiKey
+            ]
 
+            
+            let request = NSMutableURLRequest(url: NSURL(string: Constants.URL.main + Constants.Endpoints.urlMarketGetSummary)! as URL,
+                                                    cachePolicy: .useProtocolCachePolicy,
+                                                timeoutInterval: 10.0)
+            request.httpMethod = "GET"
+            request.allHTTPHeaderFields = headers
+
+            let session = URLSession.shared
+            session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
+                
+                
+                guard let data = data, error == nil, let response = response as? HTTPURLResponse else { return }
+                
                 if response.statusCode == 200 {
                     
                     do {
                         let decoder = JSONDecoder()
-                        let stock = try decoder.decode(MarketSummary.self, from: data)
+                        let market = try decoder.decode(MarketSummary.self, from: data)
                         
-                        print("Estamos recuperando la stock: \(stock.marketSummaryAndSparkResponse.result[0])")
+                        print("Estamos recuperando la stock: \(market.marketSummaryAndSparkResponse.result[0])")
+                        observer.onNext(market.marketSummaryAndSparkResponse.result)
                     } catch let error {
                         print("Ha ocurrido un error: \(error.localizedDescription)")
                     }
                 }
-        })
-        
-        dataTask.resume()
+                else if response.statusCode == 401 {
+                    print("Error 401")
+                }
+                observer.onCompleted()
+            }.resume()
+            
+            return Disposables.create {
+                //session.finishTasksAndInvalidate()
+            }
+        }
     }
+    
+    //   static func getMarketSummary() {
+    //        let headers = [
+    //            Constants.Headers.host: Constants.Endpoints.singleEndPoint,
+    //            Constants.Headers.apyKey: Constants.apiKey
+    //        ]
+    //
+    //        let request = NSMutableURLRequest(url: NSURL(string: Constants.URL.main + Constants.Endpoints.urlMarketGetSummary)! as URL,
+    //                                                cachePolicy: .useProtocolCachePolicy,
+    //                                            timeoutInterval: 10.0)
+    //       request.httpMethod = Constants.Method.get
+    //        request.allHTTPHeaderFields = headers
+    //
+    //        let session = URLSession.shared
+    //        let dataTask = session.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) -> Void in
+    //
+    //            guard let data = data, error == nil, let response = response as? HTTPURLResponse else { return }
+    //
+    //                if response.statusCode == 200 {
+    //
+    //                    do {
+    //                        let decoder = JSONDecoder()
+    //                        let stock = try decoder.decode(MarketSummary.self, from: data)
+    //
+    //                        print("Estamos recuperando la stock: \(stock.marketSummaryAndSparkResponse.result[0])")
+    //                    } catch let error {
+    //                        print("Ha ocurrido un error: \(error.localizedDescription)")
+    //                    }
+    //                }
+    //        })
+    //
+    //        dataTask.resume()
+    //    }
 }

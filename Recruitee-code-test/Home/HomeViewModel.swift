@@ -20,4 +20,12 @@ class HomeViewModel {
         self.router?.setSourceView(view)
     }
     
+    func getListStockOptions() -> Observable<[Result]> {
+        return managerConnections.getSummaryMarket()
+    }
+    
+    func makeDetailView(fullExchangeName: String) {
+        router?.navigateToDetailView(fullExchangeName: fullExchangeName)
+    }
+    
 }
