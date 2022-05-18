@@ -18,21 +18,21 @@ struct MarketSummaryAndSparkResponse: Codable {
 
 // MARK: - Result
 struct Result: Codable {
-    let fullExchangeName, exchangeTimezoneName, symbol: String
-    let gmtOffSetMilliseconds, firstTradeDateMilliseconds, exchangeDataDelayedBy: Int
+    let exchangeTimezoneName, fullExchangeName, symbol: String
+    let gmtOffSetMilliseconds, exchangeDataDelayedBy, firstTradeDateMilliseconds: Int
     let language: Language
     let regularMarketTime: RegularMarket
     let exchangeTimezoneShortName, quoteType: String
-    let customPriceAlertConfidence: CustomPriceAlertConfidence
     let marketState: MarketState
+    let customPriceAlertConfidence: CustomPriceAlertConfidence
     let market: String
     let spark: Spark
     let priceHint: Int
     let tradeable: Bool
-    let sourceInterval: Int
     let exchange: String
-    let shortName: String?
+    let sourceInterval: Int
     let region: Region
+    let shortName: String?
     let regularMarketPreviousClose: RegularMarket
     let triggerable: Bool
 }
@@ -46,8 +46,7 @@ enum Language: String, Codable {
 }
 
 enum MarketState: String, Codable {
-    case postpost = "POSTPOST"
-    case pre = "PRE"
+    case prepre = "PREPRE"
     case regular = "REGULAR"
 }
 
@@ -63,12 +62,12 @@ struct RegularMarket: Codable {
 
 // MARK: - Spark
 struct Spark: Codable {
+    let dataGranularity: Int
     let symbol: String
     let timestamp: [Int]
-    let dataGranularity: Int
-    let close: [Double]?
-    let end, start: Int?
+    let end, start: Int
     let previousClose, chartPreviousClose: Double
+    let close: [Double]
 }
 
 // MARK: - Encode/decode helpers
