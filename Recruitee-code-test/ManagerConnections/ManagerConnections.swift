@@ -57,6 +57,7 @@ class ManagerConnections {
     }
     
     func getDetailStock(fullExchangeName: String) -> Observable<QuoteType> {
+        print("se recibe el param: \(String(describing: fullExchangeName))")
         return Observable.create { observer in
             
             let headers = [
