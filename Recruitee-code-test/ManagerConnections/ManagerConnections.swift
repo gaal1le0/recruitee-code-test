@@ -19,14 +19,14 @@ class ManagerConnections {
                 Constants.Headers.host: Constants.Endpoints.singleEndPoint,
                 Constants.Headers.apyKey: Constants.apiKey
             ]
-
+            
             
             let request = NSMutableURLRequest(url: NSURL(string: Constants.URL.main + Constants.Endpoints.urlMarketGetSummary)! as URL,
-                                                    cachePolicy: .useProtocolCachePolicy,
-                                                timeoutInterval: 10.0)
+                                              cachePolicy: .useProtocolCachePolicy,
+                                              timeoutInterval: 10.0)
             request.httpMethod = Constants.Method.get
             request.allHTTPHeaderFields = headers
-
+            
             let session = URLSession.shared
             session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
                 
@@ -64,17 +64,17 @@ class ManagerConnections {
                 Constants.Headers.host: Constants.Endpoints.singleEndPoint,
                 Constants.Headers.apyKey: Constants.apiKey
             ]
-
             
-            let request = NSMutableURLRequest(url: NSURL(string: Constants.URL.main + Constants.Endpoints.urlStockGetSummary+Constants.Parameter.symbol+fullExchangeName+Constants.Parameter.region)! as URL,
-                                                    cachePolicy: .useProtocolCachePolicy,
-                                                timeoutInterval: 10.0)
+            let fullExchangeNameTrimmed = fullExchangeName.removeWhitespace()
+            
+            let request = NSMutableURLRequest(url: NSURL(string: Constants.URL.main + Constants.Endpoints.urlStockGetSummary+Constants.Parameter.symbol+fullExchangeNameTrimmed+Constants.Parameter.region)! as URL,
+                                              cachePolicy: .useProtocolCachePolicy,
+                                              timeoutInterval: 10.0)
             request.httpMethod = Constants.Method.get
             request.allHTTPHeaderFields = headers
-
+            
             let session = URLSession.shared
             session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
-                
                 
                 guard let data = data, error == nil, let response = response as? HTTPURLResponse else { return }
                 
@@ -92,6 +92,11 @@ class ManagerConnections {
                 }
                 else if response.statusCode == 401 {
                     print("Error 401")
+                    observer.onError(AppError.invalidParam)
+                }
+                else if response.statusCode == 302 {
+                    print("Error 302")
+                    observer.onError(AppError.invalidParam)
                 }
                 observer.onCompleted()
             }.resume()
