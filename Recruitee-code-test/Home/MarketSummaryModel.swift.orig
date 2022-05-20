@@ -1,0 +1,117 @@
+// This file was generated from JSON Schema using quicktype, do not modify it directly.
+// To parse the JSON, add this file to your project and do:
+//
+//   let marketSummary = try? newJSONDecoder().decode(MarketSummary.self, from: jsonData)
+
+import Foundation
+
+// MARK: - MarketSummary
+struct MarketSummary: Codable {
+    let marketSummaryAndSparkResponse: MarketSummaryAndSparkResponse
+}
+
+// MARK: - MarketSummaryAndSparkResponse
+struct MarketSummaryAndSparkResponse: Codable {
+<<<<<<< HEAD
+    let result: [Result]
+    let error: JSONNull?
+}
+
+// MARK: - Result
+struct Result: Codable {
+    let fullExchangeName, exchangeTimezoneName, symbol: String
+    let gmtOffSetMilliseconds, firstTradeDateMilliseconds, exchangeDataDelayedBy: Int
+    let language: Language
+    let regularMarketTime: RegularMarket
+    let exchangeTimezoneShortName, quoteType: String
+    let customPriceAlertConfidence: CustomPriceAlertConfidence
+    let marketState: MarketState
+    let market: String
+    let spark: Spark
+    let priceHint: Int
+    let tradeable: Bool
+    let sourceInterval: Int
+    let exchange: String
+    let shortName: String?
+    let region: Region
+    let regularMarketPreviousClose: RegularMarket
+    let triggerable: Bool
+}
+
+enum CustomPriceAlertConfidence: String, Codable {
+    case low = "LOW"
+}
+
+enum Language: String, Codable {
+    case enUS = "en-US"
+}
+
+enum MarketState: String, Codable {
+    case postpost = "POSTPOST"
+    case pre = "PRE"
+    case regular = "REGULAR"
+}
+
+enum Region: String, Codable {
+    case us = "US"
+=======
+    let result: [Market]
+}
+
+// MARK: - Result
+struct Market: Codable {
+    let fullExchangeName: String
+    let market: String
+    let shortName: String?
+>>>>>>> release/1.1
+}
+
+// MARK: - RegularMarket
+struct RegularMarket: Codable {
+    let raw: Double
+    let fmt: String
+}
+
+// MARK: - Spark
+struct Spark: Codable {
+    let symbol: String
+    let timestamp: [Int]
+<<<<<<< HEAD
+    let dataGranularity: Int
+    let close: [Double]?
+    let end, start: Int?
+    let previousClose, chartPreviousClose: Double
+}
+
+// MARK: - Encode/decode helpers
+
+class JSONNull: Codable, Hashable {
+
+    public static func == (lhs: JSONNull, rhs: JSONNull) -> Bool {
+        return true
+    }
+
+    public var hashValue: Int {
+        return 0
+    }
+
+    public init() {}
+
+    public required init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if !container.decodeNil() {
+            throw DecodingError.typeMismatch(JSONNull.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for JSONNull"))
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encodeNil()
+    }
+=======
+    let close: [Double]
+    let dataGranularity: Int
+    let previousClose, chartPreviousClose: Double
+    let end, start: Int
+>>>>>>> release/1.1
+}
