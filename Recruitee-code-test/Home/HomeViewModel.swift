@@ -20,7 +20,7 @@ class HomeViewModel {
         self.router?.setSourceView(view)
     }
     
-    func getListStockOptions() -> Observable<[Result]> {
+    func getListStockOptions() -> Observable<[Market]> {
         return managerConnections.getSummaryMarket()
     }
     

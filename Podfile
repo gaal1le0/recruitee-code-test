@@ -13,6 +13,8 @@ target 'Recruitee-code-test' do
   target 'Recruitee-code-testTests' do
     inherit! :search_paths
     # Pods for testing
+    pod 'RxTest'
+    pod 'RxBlocking'
   end
 
   target 'Recruitee-code-testUITests' do

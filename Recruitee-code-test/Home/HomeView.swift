@@ -16,8 +16,9 @@ class HomeView: UIViewController {
     private var router = HomeRouter()
     private var viewModel = HomeViewModel()
     private var disposeBag = DisposeBag()
-    private var markets = [Result]()
-    private var filteredMarket = [Result]()
+    private var markets = [Market]()
+    private var filteredMarket = [Market]()
+    var timer = Timer()
     
     lazy var searchController: UISearchController = ({
         let controller = UISearchController(searchResultsController: nil)
@@ -37,6 +38,20 @@ class HomeView: UIViewController {
         viewModel.bind(view: self, router: router)
         getData()
         manageSearchBarController()
+        scheduledTimerWithTimeInterval()
+    }
+    
+    private func scheduledTimerWithTimeInterval(){
+        timer = Timer.scheduledTimer(timeInterval: 8, target: self, selector: #selector(self.updateCounting), userInfo: nil, repeats: true)
+    }
+    
+    @objc func updateCounting(){
+        DispatchQueue.global(qos: .background).async {
+            self.getData()
+            DispatchQueue.main.async {
+                self.reloadTableView()
+            }
+        }
     }
     
     private func configureTableView() {
@@ -64,8 +79,7 @@ class HomeView: UIViewController {
         
         tableView.tableHeaderView = searchBar
         tableView.contentOffset = CGPoint(x: 0, y: searchBar.frame.size.height)
-        
-        //PROGRAMACIÓN REACTIVA PARA CUANDO SE BUSQUE ALGO EN EL BUSCADOR LOS DATOS SE MUESTREN EN LA VISTA DE TABLA
+
         searchBar.rx.text
             .orEmpty
             .distinctUntilChanged()
@@ -97,7 +111,7 @@ extension HomeView: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTableViewCell") as! HomeTableViewCell
         
         if searchController.isActive && searchController.searchBar.text != "" {
-
+            
             cell.titleMarket.text = filteredMarket[indexPath.row].fullExchangeName
             cell.market.text = filteredMarket[indexPath.row].market
             cell.shortName.text = filteredMarket[indexPath.row].shortName
@@ -114,6 +128,7 @@ extension HomeView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        searchController.isActive = false
         if searchController.isActive && searchController.searchBar.text != "" {
             viewModel.makeDetailView(fullExchangeName: String(self.filteredMarket[indexPath.row].fullExchangeName))
         } else {
