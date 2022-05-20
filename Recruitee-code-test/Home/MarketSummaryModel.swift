@@ -12,11 +12,11 @@ struct MarketSummary: Codable {
 
 // MARK: - MarketSummaryAndSparkResponse
 struct MarketSummaryAndSparkResponse: Codable {
-    let result: [Result]
+    let result: [Market]
 }
 
 // MARK: - Result
-struct Result: Codable {
+struct Market: Codable {
     let fullExchangeName: String
     let market: String
     let shortName: String?
