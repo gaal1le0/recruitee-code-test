@@ -154,9 +154,7 @@ class JSONAny: Codable {
         if let value = try? container.decode(String.self) {
             return value
         }
-        if container.decodeNil() {
-            return JSONNull()
-        }
+
         throw decodingError(forCodingPath: container.codingPath)
     }
 
@@ -172,11 +170,6 @@ class JSONAny: Codable {
         }
         if let value = try? container.decode(String.self) {
             return value
-        }
-        if let value = try? container.decodeNil() {
-            if value {
-                return JSONNull()
-            }
         }
         if var container = try? container.nestedUnkeyedContainer() {
             return try decodeArray(from: &container)
@@ -199,11 +192,6 @@ class JSONAny: Codable {
         }
         if let value = try? container.decode(String.self, forKey: key) {
             return value
-        }
-        if let value = try? container.decodeNil(forKey: key) {
-            if value {
-                return JSONNull()
-            }
         }
         if var container = try? container.nestedUnkeyedContainer(forKey: key) {
             return try decodeArray(from: &container)
@@ -242,8 +230,6 @@ class JSONAny: Codable {
                 try container.encode(value)
             } else if let value = value as? String {
                 try container.encode(value)
-            } else if value is JSONNull {
-                try container.encodeNil()
             } else if let value = value as? [Any] {
                 var container = container.nestedUnkeyedContainer()
                 try encode(to: &container, array: value)
@@ -267,9 +253,7 @@ class JSONAny: Codable {
                 try container.encode(value, forKey: key)
             } else if let value = value as? String {
                 try container.encode(value, forKey: key)
-            } else if value is JSONNull {
-                try container.encodeNil(forKey: key)
-            } else if let value = value as? [Any] {
+            }  else if let value = value as? [Any] {
                 var container = container.nestedUnkeyedContainer(forKey: key)
                 try encode(to: &container, array: value)
             } else if let value = value as? [String: Any] {
@@ -290,8 +274,6 @@ class JSONAny: Codable {
             try container.encode(value)
         } else if let value = value as? String {
             try container.encode(value)
-        } else if value is JSONNull {
-            try container.encodeNil()
         } else {
             throw encodingError(forValue: value, codingPath: container.codingPath)
         }

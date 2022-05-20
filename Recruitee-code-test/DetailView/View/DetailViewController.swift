@@ -12,7 +12,7 @@ class DetailViewController: UIViewController {
     
     @IBOutlet private weak var activity: UIActivityIndicatorView!
     @IBOutlet private weak var titleHeader: UILabel!
-
+    
     @IBOutlet private weak var symbol: UILabel!
     @IBOutlet private weak var type: UILabel!
     @IBOutlet private weak var exchange: UILabel!
@@ -39,7 +39,16 @@ class DetailViewController: UIViewController {
                 self.showStock(stock: stock)
             },
                         onError: { error in
-                print("Ha ocurrido un error: \(error)")
+                
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: "¡Ups!", message: "An error as ocurred.", preferredStyle: UIAlertController.Style.alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { _ in
+                        self.activity.stopAnimating()
+                        self.activity.hidesWhenStopped = true
+                        self.navigationController?.popViewController(animated: true)
+                    }))
+                    self.present(alert, animated: true, completion: nil)
+                }
             },
                         onCompleted: {
             }).disposed(by: disposeBag)

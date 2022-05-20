@@ -12,21 +12,27 @@ import RxSwift
 
 class ManagerConnections {
     
-    func getSummaryMarket() -> Observable<[Result]> {
+    enum GetSummaryMarketFailureReason: Int, Error {
+        case unAuthorized = 401
+        case notFound = 404
+        case moved = 302
+    }
+    
+    func getSummaryMarket() -> Observable<[Market]> {
         return Observable.create { observer in
             
             let headers = [
                 Constants.Headers.host: Constants.Endpoints.singleEndPoint,
                 Constants.Headers.apyKey: Constants.apiKey
             ]
-
+            
             
             let request = NSMutableURLRequest(url: NSURL(string: Constants.URL.main + Constants.Endpoints.urlMarketGetSummary)! as URL,
-                                                    cachePolicy: .useProtocolCachePolicy,
-                                                timeoutInterval: 10.0)
-            request.httpMethod = "GET"
+                                              cachePolicy: .useProtocolCachePolicy,
+                                              timeoutInterval: 10.0)
+            request.httpMethod = Constants.Method.get
             request.allHTTPHeaderFields = headers
-
+            
             let session = URLSession.shared
             session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
                 
@@ -52,12 +58,12 @@ class ManagerConnections {
             }.resume()
             
             return Disposables.create {
-                //session.finishTasksAndInvalidate()
             }
         }
     }
     
     func getDetailStock(fullExchangeName: String) -> Observable<QuoteType> {
+        print("se recibe el param: \(String(describing: fullExchangeName))")
         return Observable.create { observer in
             
             let headers = [
@@ -65,20 +71,16 @@ class ManagerConnections {
                 Constants.Headers.apyKey: Constants.apiKey
             ]
             
-            let url = Constants.URL.main + Constants.Endpoints.urlStockGetSummary+Constants.Parameter.symbol+fullExchangeName+Constants.Parameter.region
+            let fullExchangeNameTrimmed = fullExchangeName.removeWhitespace()
             
-            let urlString = url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-
-            
-            let request = NSMutableURLRequest(url: NSURL(string: urlString ?? "")! as URL,
-                                                    cachePolicy: .useProtocolCachePolicy,
-                                                timeoutInterval: 10.0)
-            request.httpMethod = "GET"
+            let request = NSMutableURLRequest(url: NSURL(string: Constants.URL.main + Constants.Endpoints.urlStockGetSummary+Constants.Parameter.symbol+fullExchangeNameTrimmed+Constants.Parameter.region)! as URL,
+                                              cachePolicy: .useProtocolCachePolicy,
+                                              timeoutInterval: 10.0)
+            request.httpMethod = Constants.Method.get
             request.allHTTPHeaderFields = headers
-
+            
             let session = URLSession.shared
             session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
-                
                 
                 guard let data = data, error == nil, let response = response as? HTTPURLResponse else { return }
                 
@@ -88,53 +90,25 @@ class ManagerConnections {
                         let decoder = JSONDecoder()
                         let stock = try decoder.decode(Stock.self, from: data)
                         guard let quoteType = stock.quoteType else { return }
+                        print("Estamos recuperando la stock: \(String(describing: stock.quoteType?.symbol))")
                         observer.onNext(quoteType)
                     } catch let error {
-                        print("Error: \(error.localizedDescription)")
+                        print("Ha ocurrido un error: \(error.localizedDescription)")
                     }
                 }
                 else if response.statusCode == 401 {
                     print("Error 401")
+                    observer.onError(AppError.invalidParam)
+                }
+                else if response.statusCode == 302 {
+                    print("Error 302")
+                    observer.onError(AppError.invalidParam)
                 }
                 observer.onCompleted()
             }.resume()
             
             return Disposables.create {
-                //session.finishTasksAndInvalidate()
             }
         }
     }
-    
-    //   static func getMarketSummary() {
-    //        let headers = [
-    //            Constants.Headers.host: Constants.Endpoints.singleEndPoint,
-    //            Constants.Headers.apyKey: Constants.apiKey
-    //        ]
-    //
-    //        let request = NSMutableURLRequest(url: NSURL(string: Constants.URL.main + Constants.Endpoints.urlMarketGetSummary)! as URL,
-    //                                                cachePolicy: .useProtocolCachePolicy,
-    //                                            timeoutInterval: 10.0)
-    //       request.httpMethod = Constants.Method.get
-    //        request.allHTTPHeaderFields = headers
-    //
-    //        let session = URLSession.shared
-    //        let dataTask = session.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) -> Void in
-    //
-    //            guard let data = data, error == nil, let response = response as? HTTPURLResponse else { return }
-    //
-    //                if response.statusCode == 200 {
-    //
-    //                    do {
-    //                        let decoder = JSONDecoder()
-    //                        let stock = try decoder.decode(MarketSummary.self, from: data)
-    //
-    //                        print("Estamos recuperando la stock: \(stock.marketSummaryAndSparkResponse.result[0])")
-    //                    } catch let error {
-    //                        print("Ha ocurrido un error: \(error.localizedDescription)")
-    //                    }
-    //                }
-    //        })
-    //
-    //        dataTask.resume()
-    //    }
 }
