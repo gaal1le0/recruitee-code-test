@@ -12,7 +12,13 @@ import RxSwift
 
 class ManagerConnections {
     
-    func getSummaryMarket() -> Observable<[Result]> {
+    enum GetSummaryMarketFailureReason: Int, Error {
+        case unAuthorized = 401
+        case notFound = 404
+        case moved = 302
+    }
+    
+    func getSummaryMarket() -> Observable<[Market]> {
         return Observable.create { observer in
             
             let headers = [
